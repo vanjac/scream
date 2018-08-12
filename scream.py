@@ -19,12 +19,12 @@ def mainloop(f, screen):
     screen.scrollok(True) # auto scroll screen
     screen.addstr(f.read()) # print contents of file
     while True:
-        key = screen.getch()
+        key = screen.get_wch()
         if key == 0:
             curses.beep()
-        elif key == 3 or key == 17: # ctrl-c or ctrl-q
+        elif key == chr(3) or key == chr(17): # ctrl-c or ctrl-q
             break
-        elif key == 8 or key == 127: # backspace
+        elif key == "\b": # backspace
             cur = f.tell()
             if cur == 0:
                 curses.beep()
@@ -43,7 +43,7 @@ def mainloop(f, screen):
             screen.delch()
             f.seek(cur - 1, io.SEEK_SET) # move back one character
             f.truncate(f.tell()) # delete character from file
-        elif key == 10 or key == 13: # enter
+        elif key == "\n" or key == "\r": # enter
             f.write("\n")
             f.flush()
             crs_y, _ = screen.getyx()
@@ -54,8 +54,8 @@ def mainloop(f, screen):
                 crs_y = height - 1
             screen.move(crs_y, 0)
         else:
-            f.write(chr(key))
-            screen.addch(key)
+            f.write(key)
+            screen.addstr(key)
             #screen.addstr(str(key)) # print key number for debugging
 
 if __name__ == "__main__":
