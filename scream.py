@@ -51,7 +51,11 @@ def mainloop(f, screen):
                 fullwidth = True # control character, starts with ^
 
             crs_y, crs_x = screen.getyx()
-            crs_x -= 2 if fullwidth else 1
+            if fullwidth:
+                crs_x -= 1
+                screen.move(crs_y, crs_x)
+                screen.delch() # delete the right half of a fullwidth character
+            crs_x -= 1
             if crs_x == -1:
                 _, width = screen.getmaxyx()
                 crs_x = width - 1
