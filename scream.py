@@ -5,11 +5,14 @@ import io
 def main(filename):
     screen = curses.initscr()
     try:
-        with open(filename, 'r+') as f:
-            mainloop(f, screen)
-    except FileNotFoundError:
-        with open(filename, 'w+') as f:
-            mainloop(f, screen)
+        try:
+            with open(filename, 'r+') as f:
+                mainloop(f, screen)
+        except FileNotFoundError:
+            with open(filename, 'w+') as f:
+                mainloop(f, screen)
+    except KeyboardInterrupt:
+        pass
     curses.endwin()
 
 def mainloop(f, screen):
