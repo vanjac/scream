@@ -20,7 +20,9 @@ def mainloop(f, screen):
     screen.addstr(f.read()) # print contents of file
     while True:
         key = screen.getch()
-        if key == 3 or key == 17: # ctrl-c or ctrl-q
+        if key == 0:
+            curses.beep()
+        else if key == 3 or key == 17: # ctrl-c or ctrl-q
             break
         elif key == 8 or key == 127: # backspace
             cur = f.tell()
