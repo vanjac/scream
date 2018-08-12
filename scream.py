@@ -23,8 +23,10 @@ def mainloop(f, screen):
         key = screen.get_wch()
         if key == 0:
             curses.beep()
+        elif isinstance(key, int):
+            pass
         elif key == chr(3) or key == chr(17): # ctrl-c or ctrl-q
-            break
+            return
         elif key == "\b" or key == chr(127): # backspace
             cur = f.tell()
             if cur == 0:
