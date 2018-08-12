@@ -4,8 +4,12 @@ import io
 
 def main(filename):
     screen = curses.initscr()
-    with open(filename, 'r+') as f:
-        mainloop(f, screen)
+    try:
+        with open(filename, 'r+') as f:
+            mainloop(f, screen)
+    except FileNotFoundError:
+        with open(filename, 'w+') as f:
+            mainloop(f, screen)
     curses.endwin()
 
 def mainloop(f, screen):
