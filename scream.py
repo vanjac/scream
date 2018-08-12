@@ -8,7 +8,7 @@ def main(filename):
         screen.addstr(f.read())
         while True:
             key = screen.getch()
-            if key == 17: # ctrl-q
+            if key == 3 or key == 17: # ctrl-c or ctrl-q
                 break
             if key == 8 or key == 127: # backspace
                 f.seek(f.tell() - 1, io.SEEK_SET) # move back one character
