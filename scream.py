@@ -1,6 +1,7 @@
 import sys
 import curses
 import io
+import unicodedata
 
 def main(filename):
     screen = curses.initscr()
@@ -41,8 +42,14 @@ def mainloop(f, screen):
             if value == "\n":
                 curses.beep()
                 continue # can't delete lines
+
+            unicode_width = unicodedata.east_asian_width(value)
+            # https://stackoverflow.com/a/31666966
+            # characters that take up 2 spaces, like emoji
+            fullwidth = unicode_width == "A" or unicode_width == "F" or unicode_width == "W"
+
             crs_y, crs_x = screen.getyx()
-            crs_x -= 1
+            crs_x -= 2 if fullwidth else 1
             if crs_x == -1:
                 _, width = screen.getmaxyx()
                 crs_x = width - 1
