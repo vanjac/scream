@@ -69,6 +69,10 @@ def mainloop(f, screen):
                 crs_y = height - 1
             screen.move(crs_y, 0)
         else:
+            if key == ord(6): # ctrl-f
+                key = "🦊"
+            if key == ord(20): # ctrl-t
+                key = "🤔"
             f.write(key)
             screen.addstr(key)
             #screen.addstr(str(key)) # print key number for debugging
