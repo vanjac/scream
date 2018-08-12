@@ -93,7 +93,6 @@ def mainloop(f, screen):
                 key = "🤔"
             f.write(key)
             screen.addstr(key)
-            #screen.addstr(str(key)) # print key number for debugging
 
 if __name__ == "__main__":
     main(sys.argv[1])
