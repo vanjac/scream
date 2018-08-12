@@ -24,7 +24,7 @@ def mainloop(f, screen):
             curses.beep()
         elif key == chr(3) or key == chr(17): # ctrl-c or ctrl-q
             break
-        elif key == "\b": # backspace
+        elif key == "\b" or key == chr(127): # backspace
             cur = f.tell()
             if cur == 0:
                 curses.beep()
