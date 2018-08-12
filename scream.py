@@ -47,6 +47,8 @@ def mainloop(f, screen):
             # https://stackoverflow.com/a/31666966
             # characters that take up 2 spaces, like emoji
             fullwidth = unicode_width == "A" or unicode_width == "F" or unicode_width == "W"
+            if ord(value) < 32:
+                fullwidth = True # control character, starts with ^
 
             crs_y, crs_x = screen.getyx()
             crs_x -= 2 if fullwidth else 1
