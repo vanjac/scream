@@ -7,43 +7,51 @@ def main(filename):
     screen = curses.initscr()
     try:
         try:
+            # 'r+': reading/writing, start at beginning, don't create
             with open(filename, 'r+') as f:
                 mainloop(f, screen)
         except FileNotFoundError:
+            # 'w+': create new file for reading/writing
             with open(filename, 'w+') as f:
                 mainloop(f, screen)
     finally:
         curses.endwin()
 
 def mainloop(f, screen):
-    curses.noecho()
+    curses.noecho() # don't write characters as they are typed
     screen.scrollok(True) # auto scroll screen
+
     screen.addstr(f.read()) # print contents of file
+
     while True:
         key = screen.get_wch()
         if key == 0:
             curses.beep()
         elif isinstance(key, int):
+            # special function key
             pass
         elif key == chr(3) or key == chr(17): # ctrl-c or ctrl-q
+            # quit
             return
         elif key == "\b" or key == chr(127): # backspace
-            cur = f.tell()
-            if cur == 0:
+            cur = f.tell() # location in file
+            if cur == 0: # at start of file
                 curses.beep()
                 continue
-            num_bytes = 1
+            num_bytes = 1 # byte length of the previous character
             while True:
+                # find the smallest set of bytes that can be decoded
                 f.seek(cur - num_bytes, io.SEEK_SET)
                 try:
                     value = f.read(num_bytes)
-                except UnicodeDecodeError: # could be an emoji
+                except UnicodeDecodeError:
                     num_bytes += 1
                     continue
                 break
             if value == "\n":
+                # at the start of the line. can't delete lines
                 curses.beep()
-                continue # can't delete lines
+                continue
 
             unicode_width = unicodedata.east_asian_width(value)
             # https://stackoverflow.com/a/31666966
@@ -54,11 +62,13 @@ def mainloop(f, screen):
 
             crs_y, crs_x = screen.getyx()
             if fullwidth:
+                # delete the right half of a fullwidth character
                 crs_x -= 1
                 screen.move(crs_y, crs_x)
-                screen.delch() # delete the right half of a fullwidth character
+                screen.delch()
             crs_x -= 1
             if crs_x == -1:
+                # at left edge of screen. wrap around.
                 _, width = screen.getmaxyx()
                 crs_x = width - 1
                 crs_y -= 1
