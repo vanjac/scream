@@ -11,9 +11,8 @@ def main(filename):
         except FileNotFoundError:
             with open(filename, 'w+') as f:
                 mainloop(f, screen)
-    except KeyboardInterrupt:
-        pass
-    curses.endwin()
+    finally:
+        curses.endwin()
 
 def mainloop(f, screen):
     curses.noecho()
