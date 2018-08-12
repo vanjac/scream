@@ -24,21 +24,23 @@ def mainloop(f, screen):
             break
         elif key == 8 or key == 127: # backspace
             cur = f.tell()
+            if cur == 0:
+                curses.beep()
+                continue
             f.seek(cur - 1, io.SEEK_SET)
-            value = f.read(1)
-            if value == "\n":
-                curses.beep() # can't delete lines
-            else:
-                crs_y, crs_x = screen.getyx()
-                crs_x -= 1
-                if crs_x == -1:
-                    _, width = screen.getmaxyx()
-                    crs_x = width - 1
-                    crs_y -= 1
-                screen.move(crs_y, crs_x)
-                screen.delch()
-                f.seek(cur - 1, io.SEEK_SET) # move back one character
-                f.truncate(f.tell()) # delete character from file
+            if f.read(1) == "\n":
+                curses.beep()
+                continue # can't delete lines
+            crs_y, crs_x = screen.getyx()
+            crs_x -= 1
+            if crs_x == -1:
+                _, width = screen.getmaxyx()
+                crs_x = width - 1
+                crs_y -= 1
+            screen.move(crs_y, crs_x)
+            screen.delch()
+            f.seek(cur - 1, io.SEEK_SET) # move back one character
+            f.truncate(f.tell()) # delete character from file
         elif key == 10 or key == 13: # enter
             f.write("\n")
             f.flush()
