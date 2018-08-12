@@ -61,19 +61,15 @@ def mainloop(f, screen):
                 fullwidth = True # control character, starts with ^
 
             crs_y, crs_x = screen.getyx()
-            if fullwidth:
-                # delete the right half of a fullwidth character
+            for _ in range(0, 2 if fullwidth else 1):
                 crs_x -= 1
+                if crs_x == -1:
+                    # at left edge of screen. wrap around.
+                    _, width = screen.getmaxyx()
+                    crs_x = width - 1
+                    crs_y -= 1
                 screen.move(crs_y, crs_x)
                 screen.delch()
-            crs_x -= 1
-            if crs_x == -1:
-                # at left edge of screen. wrap around.
-                _, width = screen.getmaxyx()
-                crs_x = width - 1
-                crs_y -= 1
-            screen.move(crs_y, crs_x)
-            screen.delch()
             f.seek(cur - num_bytes, io.SEEK_SET) # move back one character
             f.truncate(f.tell()) # delete character from file
         elif key == "\n" or key == "\r": # enter
