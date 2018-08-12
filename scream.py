@@ -29,8 +29,16 @@ def mainloop(f, screen):
             if cur == 0:
                 curses.beep()
                 continue
-            f.seek(cur - 1, io.SEEK_SET)
-            if f.read(1) == "\n":
+            num_bytes = 1
+            while True:
+                f.seek(cur - num_bytes, io.SEEK_SET)
+                try:
+                    value = f.read(num_bytes)
+                except UnicodeDecodeError: # could be an emoji
+                    num_bytes += 1
+                    continue
+                break
+            if value == "\n":
                 curses.beep()
                 continue # can't delete lines
             crs_y, crs_x = screen.getyx()
@@ -41,7 +49,7 @@ def mainloop(f, screen):
                 crs_y -= 1
             screen.move(crs_y, crs_x)
             screen.delch()
-            f.seek(cur - 1, io.SEEK_SET) # move back one character
+            f.seek(cur - num_bytes, io.SEEK_SET) # move back one character
             f.truncate(f.tell()) # delete character from file
         elif key == "\n" or key == "\r": # enter
             f.write("\n")
